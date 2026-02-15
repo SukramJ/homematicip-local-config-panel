@@ -1,0 +1,44 @@
+{
+  "common": {
+    "back": "Back",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "device_list": {
+    "title": "Homematic Device Configuration",
+    "select_ccu": "CCU",
+    "select_placeholder": "Select a CCU...",
+    "search_placeholder": "Search devices...",
+    "no_entry_selected": "Please select a CCU to view devices.",
+    "no_devices": "No configurable devices found.",
+    "channels": "channels"
+  },
+  "device_detail": {
+    "address": "Address",
+    "firmware": "Firmware",
+    "channel": "Channel",
+    "configure_master": "Configure MASTER",
+    "no_master_config": "No MASTER configuration available.",
+    "not_found": "Device not found.",
+    "yes": "Yes",
+    "no": "No",
+    "reachable": "Reachable",
+    "unreachable": "Unreachable"
+  },
+  "channel_config": {
+    "save": "Save",
+    "saving": "Saving...",
+    "discard": "Discard Changes",
+    "reset_defaults": "Reset to Defaults",
+    "confirm_save_title": "Save Changes",
+    "confirm_save_text": "Apply {count} change(s) to the device?",
+    "unsaved_title": "Unsaved Changes",
+    "unsaved_warning": "You have unsaved changes. Discard them and go back?",
+    "save_success": "Changes saved successfully.",
+    "save_failed": "Failed to save changes.",
+    "validation_failed": "Validation failed. Please check the highlighted fields."
+  }
+}
