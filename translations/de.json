@@ -1,0 +1,44 @@
+{
+  "common": {
+    "back": "Zurück",
+    "loading": "Laden...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "yes": "Ja",
+    "no": "Nein"
+  },
+  "device_list": {
+    "title": "Homematic Gerätekonfiguration",
+    "select_ccu": "CCU",
+    "select_placeholder": "CCU auswählen...",
+    "search_placeholder": "Geräte suchen...",
+    "no_entry_selected": "Bitte eine CCU auswählen, um Geräte anzuzeigen.",
+    "no_devices": "Keine konfigurierbaren Geräte gefunden.",
+    "channels": "Kanäle"
+  },
+  "device_detail": {
+    "address": "Adresse",
+    "firmware": "Firmware",
+    "channel": "Kanal",
+    "configure_master": "MASTER konfigurieren",
+    "no_master_config": "Keine MASTER-Konfiguration verfügbar.",
+    "not_found": "Gerät nicht gefunden.",
+    "yes": "Ja",
+    "no": "Nein",
+    "reachable": "Erreichbar",
+    "unreachable": "Nicht erreichbar"
+  },
+  "channel_config": {
+    "save": "Speichern",
+    "saving": "Speichern...",
+    "discard": "Änderungen verwerfen",
+    "reset_defaults": "Standardwerte laden",
+    "confirm_save_title": "Änderungen speichern",
+    "confirm_save_text": "{count} Änderung(en) auf das Gerät anwenden?",
+    "unsaved_title": "Ungespeicherte Änderungen",
+    "unsaved_warning": "Es gibt ungespeicherte Änderungen. Verwerfen und zurückgehen?",
+    "save_success": "Änderungen erfolgreich gespeichert.",
+    "save_failed": "Fehler beim Speichern der Änderungen.",
+    "validation_failed": "Validierung fehlgeschlagen. Bitte die markierten Felder prüfen."
+  }
+}
