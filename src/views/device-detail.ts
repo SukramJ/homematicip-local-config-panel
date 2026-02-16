@@ -1,7 +1,7 @@
 import { LitElement, html, css, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { sharedStyles } from "../styles";
-import { listDevices, exportParamset, importParamset } from "../api";
+import { listDevices, exportParamset, importParamset, LINKABLE_INTERFACES } from "../api";
 import { localize } from "../localize";
 import { showConfirmationDialog, showToast } from "../ha-helpers";
 import type { HomeAssistant, DeviceInfo, ChannelInfo, MaintenanceData } from "../types";
@@ -68,6 +68,20 @@ export class HmDeviceDetail extends LitElement {
     this.dispatchEvent(
       new CustomEvent("show-history", {
         detail: { device: this.deviceAddress },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  private _handleShowLinks(): void {
+    this.dispatchEvent(
+      new CustomEvent("show-links", {
+        detail: {
+          device: this.deviceAddress,
+          interfaceId: this.interfaceId,
+          deviceName: this._device?.name || this.deviceAddress,
+        },
         bubbles: true,
         composed: true,
       })
@@ -159,9 +173,18 @@ export class HmDeviceDetail extends LitElement {
           ${this._l("device_detail.address")}: ${device.address} |
           ${this._l("device_detail.firmware")}: ${device.firmware}
         </div>
-        <button class="history-button" @click=${this._handleShowHistory}>
-          ${this._l("device_detail.show_history")}
-        </button>
+        <div class="header-actions">
+          ${LINKABLE_INTERFACES.has(device.interface_id)
+            ? html`
+                <button class="history-button" @click=${this._handleShowLinks}>
+                  ${this._l("device_detail.show_links")}
+                </button>
+              `
+            : nothing}
+          <button class="history-button" @click=${this._handleShowHistory}>
+            ${this._l("device_detail.show_history")}
+          </button>
+        </div>
       </div>
 
       ${ch0 ? this._renderMaintenanceChannel(ch0, device.maintenance) : nothing}
@@ -311,6 +334,12 @@ export class HmDeviceDetail extends LitElement {
         font-weight: 400;
       }
 
+      .header-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
       .history-button {
         background: none;
         border: 1px solid var(--primary-color, #03a9f4);
@@ -320,7 +349,6 @@ export class HmDeviceDetail extends LitElement {
         cursor: pointer;
         font-size: 13px;
         font-family: inherit;
-        margin-top: 8px;
       }
 
       .history-button:hover {

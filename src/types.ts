@@ -13,6 +13,8 @@ export type {
   ImportResult,
   HistoryEntry,
   HistoryResult,
+  LinkInfo,
+  LinkableChannel,
 } from "./api";
 
 export interface NavigationDetail {

@@ -112,6 +112,37 @@ export interface HistoryResult {
   total: number;
 }
 
+export interface LinkInfo {
+  sender_address: string;
+  receiver_address: string;
+  name: string;
+  description: string;
+  flags: number;
+  sender_device_name: string;
+  sender_device_model: string;
+  receiver_device_name: string;
+  receiver_device_model: string;
+  peer_address: string;
+  peer_device_name: string;
+  peer_device_model: string;
+  direction: "outgoing" | "incoming";
+}
+
+export interface LinkableChannel {
+  address: string;
+  channel_type: string;
+  device_address: string;
+  device_name: string;
+  device_model: string;
+}
+
+/** Interfaces that support direct links (peerings). */
+export const LINKABLE_INTERFACES = new Set([
+  "BidCos-RF",
+  "BidCos-Wired",
+  "HmIP-RF",
+]);
+
 // --- Original API functions ---
 
 export async function listDevices(
@@ -334,4 +365,121 @@ export async function clearChangeHistory(
     type: "homematicip_local/config/clear_change_history",
     entry_id: entryId,
   });
+}
+
+// --- Direct link commands ---
+
+export async function listDeviceLinks(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  deviceAddress: string
+): Promise<LinkInfo[]> {
+  const result = await hass.callWS<{ links: LinkInfo[] }>({
+    type: "homematicip_local/config/list_device_links",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    device_address: deviceAddress,
+  });
+  return result.links;
+}
+
+export async function getLinkFormSchema(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  senderAddress: string,
+  receiverAddress: string
+): Promise<FormSchema> {
+  return hass.callWS<FormSchema>({
+    type: "homematicip_local/config/get_link_form_schema",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    sender_channel_address: senderAddress,
+    receiver_channel_address: receiverAddress,
+  });
+}
+
+export async function getLinkParamset(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  senderAddress: string,
+  receiverAddress: string
+): Promise<Record<string, unknown>> {
+  const result = await hass.callWS<{ values: Record<string, unknown> }>({
+    type: "homematicip_local/config/get_link_paramset",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    sender_channel_address: senderAddress,
+    receiver_channel_address: receiverAddress,
+  });
+  return result.values;
+}
+
+export async function putLinkParamset(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  senderAddress: string,
+  receiverAddress: string,
+  values: Record<string, unknown>
+): Promise<{ success: boolean }> {
+  return hass.callWS({
+    type: "homematicip_local/config/put_link_paramset",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    sender_channel_address: senderAddress,
+    receiver_channel_address: receiverAddress,
+    values,
+  });
+}
+
+export async function addLink(
+  hass: HomeAssistant,
+  entryId: string,
+  senderAddress: string,
+  receiverAddress: string,
+  name?: string,
+  description?: string
+): Promise<{ success: boolean }> {
+  return hass.callWS({
+    type: "homematicip_local/config/add_link",
+    entry_id: entryId,
+    sender_channel_address: senderAddress,
+    receiver_channel_address: receiverAddress,
+    ...(name && { name }),
+    ...(description && { description }),
+  });
+}
+
+export async function removeLink(
+  hass: HomeAssistant,
+  entryId: string,
+  senderAddress: string,
+  receiverAddress: string
+): Promise<{ success: boolean }> {
+  return hass.callWS({
+    type: "homematicip_local/config/remove_link",
+    entry_id: entryId,
+    sender_channel_address: senderAddress,
+    receiver_channel_address: receiverAddress,
+  });
+}
+
+export async function getLinkableChannels(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  channelAddress: string,
+  role: "sender" | "receiver"
+): Promise<LinkableChannel[]> {
+  const result = await hass.callWS<{ channels: LinkableChannel[] }>({
+    type: "homematicip_local/config/get_linkable_channels",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    channel_address: channelAddress,
+    role,
+  });
+  return result.channels;
 }

@@ -4,9 +4,19 @@ import "./views/device-list";
 import "./views/device-detail";
 import "./views/channel-config";
 import "./views/change-history";
+import "./views/device-links";
+import "./views/link-config";
+import "./views/add-link";
 import type { HomeAssistant, PanelInfo, EntryInfo } from "./types";
 
-type PanelView = "device-list" | "device-detail" | "channel-config" | "change-history";
+type PanelView =
+  | "device-list"
+  | "device-detail"
+  | "channel-config"
+  | "change-history"
+  | "device-links"
+  | "link-config"
+  | "add-link";
 
 @customElement("homematic-config")
 export class HomematicConfigPanel extends LitElement {
@@ -22,6 +32,9 @@ export class HomematicConfigPanel extends LitElement {
   @state() private _selectedChannel = "";
   @state() private _selectedChannelType = "";
   @state() private _selectedParamsetKey = "MASTER";
+  @state() private _selectedDeviceName = "";
+  @state() private _selectedSenderAddress = "";
+  @state() private _selectedReceiverAddress = "";
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -50,6 +63,8 @@ export class HomematicConfigPanel extends LitElement {
     const channel = params.get("channel") || "";
     const channelType = params.get("channel_type") || "";
     const paramsetKey = params.get("paramset") || "MASTER";
+    const senderAddress = params.get("sender") || "";
+    const receiverAddress = params.get("receiver") || "";
 
     if (entryId) this._entryId = entryId;
     if (view) {
@@ -59,6 +74,8 @@ export class HomematicConfigPanel extends LitElement {
         channel,
         channelType,
         paramsetKey,
+        senderAddress,
+        receiverAddress,
       });
     }
   }
@@ -78,6 +95,13 @@ export class HomematicConfigPanel extends LitElement {
       if (this._selectedParamsetKey !== "MASTER") {
         params.set("paramset", this._selectedParamsetKey);
       }
+    }
+    if (this._view === "link-config") {
+      if (this._selectedSenderAddress) params.set("sender", this._selectedSenderAddress);
+      if (this._selectedReceiverAddress) params.set("receiver", this._selectedReceiverAddress);
+    }
+    if (this._view === "add-link") {
+      if (this._selectedChannel) params.set("channel", this._selectedChannel);
     }
 
     const hash = params.toString();
@@ -108,6 +132,9 @@ export class HomematicConfigPanel extends LitElement {
       channel?: string;
       channelType?: string;
       paramsetKey?: string;
+      deviceName?: string;
+      senderAddress?: string;
+      receiverAddress?: string;
     }
   ): void {
     this._view = view;
@@ -116,6 +143,9 @@ export class HomematicConfigPanel extends LitElement {
     if (detail?.channel !== undefined) this._selectedChannel = detail.channel;
     if (detail?.channelType !== undefined) this._selectedChannelType = detail.channelType;
     if (detail?.paramsetKey !== undefined) this._selectedParamsetKey = detail.paramsetKey;
+    if (detail?.deviceName !== undefined) this._selectedDeviceName = detail.deviceName;
+    if (detail?.senderAddress !== undefined) this._selectedSenderAddress = detail.senderAddress;
+    if (detail?.receiverAddress !== undefined) this._selectedReceiverAddress = detail.receiverAddress;
     this._updateUrlHash();
   }
 
@@ -146,6 +176,8 @@ export class HomematicConfigPanel extends LitElement {
               this._navigateTo("channel-config", e.detail)}
             @show-history=${(e: CustomEvent) =>
               this._navigateTo("change-history", e.detail)}
+            @show-links=${(e: CustomEvent) =>
+              this._navigateTo("device-links", e.detail)}
             @back=${() => this._navigateTo("device-list")}
           ></hm-device-detail>
         `;
@@ -179,6 +211,59 @@ export class HomematicConfigPanel extends LitElement {
                   : undefined
               )}
           ></hm-change-history>
+        `;
+      case "device-links":
+        return html`
+          <hm-device-links
+            .hass=${this.hass}
+            .entryId=${this._entryId}
+            .interfaceId=${this._selectedInterfaceId}
+            .deviceAddress=${this._selectedDevice}
+            .deviceName=${this._selectedDeviceName}
+            @configure-link=${(e: CustomEvent) =>
+              this._navigateTo("link-config", e.detail)}
+            @add-link=${(e: CustomEvent) =>
+              this._navigateTo("add-link", e.detail)}
+            @back=${() =>
+              this._navigateTo("device-detail", {
+                device: this._selectedDevice,
+                interfaceId: this._selectedInterfaceId,
+              })}
+          ></hm-device-links>
+        `;
+      case "link-config":
+        return html`
+          <hm-link-config
+            .hass=${this.hass}
+            .entryId=${this._entryId}
+            .interfaceId=${this._selectedInterfaceId}
+            .senderAddress=${this._selectedSenderAddress}
+            .receiverAddress=${this._selectedReceiverAddress}
+            @back=${() =>
+              this._navigateTo("device-links", {
+                device: this._selectedDevice,
+                interfaceId: this._selectedInterfaceId,
+              })}
+          ></hm-link-config>
+        `;
+      case "add-link":
+        return html`
+          <hm-add-link
+            .hass=${this.hass}
+            .entryId=${this._entryId}
+            .interfaceId=${this._selectedInterfaceId}
+            .deviceAddress=${this._selectedDevice}
+            @link-created=${() =>
+              this._navigateTo("device-links", {
+                device: this._selectedDevice,
+                interfaceId: this._selectedInterfaceId,
+              })}
+            @back=${() =>
+              this._navigateTo("device-links", {
+                device: this._selectedDevice,
+                interfaceId: this._selectedInterfaceId,
+              })}
+          ></hm-add-link>
         `;
     }
   }
