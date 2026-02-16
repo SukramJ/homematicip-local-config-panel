@@ -5,6 +5,14 @@ export type {
   FormSection,
   FormParameter,
   PutResult,
+  MaintenanceData,
+  SessionState,
+  SessionUndoRedoResult,
+  SessionSaveResult,
+  ExportResult,
+  ImportResult,
+  HistoryEntry,
+  HistoryResult,
 } from "./api";
 
 export interface NavigationDetail {

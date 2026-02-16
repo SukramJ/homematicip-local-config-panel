@@ -14,7 +14,11 @@
     "search_placeholder": "Geräte suchen...",
     "no_entry_selected": "Bitte eine CCU auswählen, um Geräte anzuzeigen.",
     "no_devices": "Keine konfigurierbaren Geräte gefunden.",
-    "channels": "Kanäle"
+    "channels": "Kanäle",
+    "unreachable": "Nicht erreichbar",
+    "reachable": "Erreichbar",
+    "low_battery": "Batterie schwach",
+    "config_pending": "Konfiguration ausstehend"
   },
   "device_detail": {
     "address": "Adresse",
@@ -26,7 +30,17 @@
     "yes": "Ja",
     "no": "Nein",
     "reachable": "Erreichbar",
-    "unreachable": "Nicht erreichbar"
+    "unreachable": "Nicht erreichbar",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "export_success": "Konfiguration erfolgreich exportiert.",
+    "export_failed": "Export der Konfiguration fehlgeschlagen.",
+    "import_confirm_title": "Konfiguration importieren",
+    "import_confirm_text": "Konfiguration importieren und auf Kanal {channel} anwenden?",
+    "import_success": "Konfiguration erfolgreich importiert.",
+    "import_failed": "Import der Konfiguration fehlgeschlagen.",
+    "import_validation_failed": "Import-Validierung fehlgeschlagen.",
+    "show_history": "Änderungsverlauf"
   },
   "channel_config": {
     "save": "Speichern",
@@ -39,6 +53,20 @@
     "unsaved_warning": "Es gibt ungespeicherte Änderungen. Verwerfen und zurückgehen?",
     "save_success": "Änderungen erfolgreich gespeichert.",
     "save_failed": "Fehler beim Speichern der Änderungen.",
-    "validation_failed": "Validierung fehlgeschlagen. Bitte die markierten Felder prüfen."
+    "validation_failed": "Validierung fehlgeschlagen. Bitte die markierten Felder prüfen.",
+    "undo": "Rückgängig",
+    "redo": "Wiederherstellen"
+  },
+  "change_history": {
+    "title": "Änderungsverlauf",
+    "empty": "Keine Konfigurationsänderungen aufgezeichnet.",
+    "clear": "Verlauf löschen",
+    "clear_confirm_title": "Verlauf löschen",
+    "clear_confirm_text": "Alle Verlaufseinträge löschen? Dies kann nicht rückgängig gemacht werden.",
+    "clear_success": "Verlauf gelöscht ({count} Einträge entfernt).",
+    "source_manual": "Manuell",
+    "source_import": "Import",
+    "source_copy": "Kopie",
+    "parameters_changed": "{count} Parameter geändert"
   }
 }

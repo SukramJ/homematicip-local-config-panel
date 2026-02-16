@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 (2026-02-16)
+
+### Changed
+
+- Updated `@rollup/plugin-node-resolve` from ^15.0.0 to ^16.0.0
+- Updated `@rollup/plugin-typescript` from ^11.0.0 to ^12.0.0
+
 ## 1.0.0 (2026-02-12)
 
 ### Added

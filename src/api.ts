@@ -1,12 +1,23 @@
 import type { HomeAssistant } from "./types";
 
+export interface MaintenanceData {
+  unreach?: boolean;
+  low_bat?: boolean;
+  rssi_device?: number;
+  rssi_peer?: number;
+  dutycycle?: boolean;
+  config_pending?: boolean;
+}
+
 export interface DeviceInfo {
   address: string;
   interface_id: string;
   model: string;
+  model_description: string;
   name: string;
   firmware: string;
   channels: ChannelInfo[];
+  maintenance: MaintenanceData;
 }
 
 export interface ChannelInfo {
@@ -50,6 +61,58 @@ export interface PutResult {
   validated: boolean;
   validation_errors: Record<string, string>;
 }
+
+export interface SessionState {
+  is_dirty: boolean;
+  can_undo: boolean;
+  can_redo: boolean;
+  validation_errors: Record<string, string>;
+}
+
+export interface SessionUndoRedoResult {
+  performed: boolean;
+  is_dirty: boolean;
+  can_undo: boolean;
+  can_redo: boolean;
+}
+
+export interface SessionSaveResult {
+  success: boolean;
+  validated: boolean;
+  validation_errors: Record<string, string>;
+  changes_applied: number;
+}
+
+export interface ExportResult {
+  json_data: string;
+}
+
+export interface ImportResult {
+  success: boolean;
+  validated: boolean;
+  validation_errors: Record<string, string>;
+  imported_model: string;
+  imported_at: string;
+}
+
+export interface HistoryEntry {
+  timestamp: string;
+  entry_id: string;
+  interface_id: string;
+  channel_address: string;
+  device_name: string;
+  device_model: string;
+  paramset_key: string;
+  changes: Record<string, { old: unknown; new: unknown }>;
+  source: "manual" | "import" | "copy";
+}
+
+export interface HistoryResult {
+  entries: HistoryEntry[];
+  total: number;
+}
+
+// --- Original API functions ---
 
 export async function listDevices(
   hass: HomeAssistant,
@@ -114,5 +177,161 @@ export async function putParamset(
     paramset_key: paramsetKey,
     values,
     validate,
+  });
+}
+
+// --- Session commands ---
+
+export async function sessionOpen(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  channelAddress: string,
+  paramsetKey = "MASTER"
+): Promise<{ success: boolean }> {
+  return hass.callWS({
+    type: "homematicip_local/config/session_open",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    channel_address: channelAddress,
+    paramset_key: paramsetKey,
+  });
+}
+
+export async function sessionSet(
+  hass: HomeAssistant,
+  entryId: string,
+  channelAddress: string,
+  parameter: string,
+  value: unknown,
+  paramsetKey = "MASTER"
+): Promise<SessionState> {
+  return hass.callWS({
+    type: "homematicip_local/config/session_set",
+    entry_id: entryId,
+    channel_address: channelAddress,
+    parameter,
+    value,
+    paramset_key: paramsetKey,
+  });
+}
+
+export async function sessionUndo(
+  hass: HomeAssistant,
+  entryId: string,
+  channelAddress: string,
+  paramsetKey = "MASTER"
+): Promise<SessionUndoRedoResult> {
+  return hass.callWS({
+    type: "homematicip_local/config/session_undo",
+    entry_id: entryId,
+    channel_address: channelAddress,
+    paramset_key: paramsetKey,
+  });
+}
+
+export async function sessionRedo(
+  hass: HomeAssistant,
+  entryId: string,
+  channelAddress: string,
+  paramsetKey = "MASTER"
+): Promise<SessionUndoRedoResult> {
+  return hass.callWS({
+    type: "homematicip_local/config/session_redo",
+    entry_id: entryId,
+    channel_address: channelAddress,
+    paramset_key: paramsetKey,
+  });
+}
+
+export async function sessionSave(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  channelAddress: string,
+  paramsetKey = "MASTER"
+): Promise<SessionSaveResult> {
+  return hass.callWS({
+    type: "homematicip_local/config/session_save",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    channel_address: channelAddress,
+    paramset_key: paramsetKey,
+  });
+}
+
+export async function sessionDiscard(
+  hass: HomeAssistant,
+  entryId: string,
+  channelAddress: string,
+  paramsetKey = "MASTER"
+): Promise<{ success: boolean }> {
+  return hass.callWS({
+    type: "homematicip_local/config/session_discard",
+    entry_id: entryId,
+    channel_address: channelAddress,
+    paramset_key: paramsetKey,
+  });
+}
+
+// --- Export/Import ---
+
+export async function exportParamset(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  channelAddress: string,
+  paramsetKey = "MASTER"
+): Promise<ExportResult> {
+  return hass.callWS({
+    type: "homematicip_local/config/export_paramset",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    channel_address: channelAddress,
+    paramset_key: paramsetKey,
+  });
+}
+
+export async function importParamset(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  channelAddress: string,
+  jsonData: string,
+  paramsetKey = "MASTER"
+): Promise<ImportResult> {
+  return hass.callWS({
+    type: "homematicip_local/config/import_paramset",
+    entry_id: entryId,
+    interface_id: interfaceId,
+    channel_address: channelAddress,
+    json_data: jsonData,
+    paramset_key: paramsetKey,
+  });
+}
+
+// --- Change history ---
+
+export async function getChangeHistory(
+  hass: HomeAssistant,
+  entryId: string,
+  channelAddress = "",
+  limit = 50
+): Promise<HistoryResult> {
+  return hass.callWS({
+    type: "homematicip_local/config/get_change_history",
+    entry_id: entryId,
+    channel_address: channelAddress,
+    limit,
+  });
+}
+
+export async function clearChangeHistory(
+  hass: HomeAssistant,
+  entryId: string
+): Promise<{ success: boolean; cleared: number }> {
+  return hass.callWS({
+    type: "homematicip_local/config/clear_change_history",
+    entry_id: entryId,
   });
 }
