@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { sharedStyles } from "../styles";
 import { listDevices } from "../api";
 import { localize } from "../localize";
-import type { HomeAssistant, EntryInfo, DeviceInfo } from "../types";
+import type { HomeAssistant, EntryInfo, DeviceInfo, MaintenanceData } from "../types";
 
 @customElement("hm-device-list")
 export class HmDeviceList extends LitElement {
@@ -85,6 +85,25 @@ export class HmDeviceList extends LitElement {
     );
   }
 
+  private _renderMaintenanceIcons(m: MaintenanceData) {
+    if (!m || Object.keys(m).length === 0) return nothing;
+    return html`
+      <div class="device-status">
+        ${m.unreach === true
+          ? html`<span class="status-badge unreachable" title="${this._l("device_list.unreachable")}">&#x274C;</span>`
+          : m.unreach === false
+            ? html`<span class="status-badge reachable" title="${this._l("device_list.reachable")}">&#x2705;</span>`
+            : nothing}
+        ${m.low_bat === true
+          ? html`<span class="status-badge low-bat" title="${this._l("device_list.low_battery")}">&#x1F50B;</span>`
+          : nothing}
+        ${m.config_pending === true
+          ? html`<span class="status-badge config-pending" title="${this._l("device_list.config_pending")}">&#x23F3;</span>`
+          : nothing}
+      </div>
+    `;
+  }
+
   render() {
     return html`
       <div class="panel-header">
@@ -163,6 +182,7 @@ export class HmDeviceList extends LitElement {
                       ${device.channels.length} ${this._l("device_list.channels")}
                     </span>
                   </div>
+                  ${this._renderMaintenanceIcons(device.maintenance)}
                   <div class="device-arrow">\u25B8</div>
                 </div>
               `
@@ -267,6 +287,18 @@ export class HmDeviceList extends LitElement {
         margin-right: 12px;
         font-size: 12px;
         color: var(--secondary-text-color);
+      }
+
+      .device-status {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        margin-right: 8px;
+      }
+
+      .status-badge {
+        font-size: 14px;
+        cursor: default;
       }
 
       .device-arrow {

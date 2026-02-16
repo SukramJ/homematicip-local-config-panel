@@ -14,7 +14,11 @@
     "search_placeholder": "Search devices...",
     "no_entry_selected": "Please select a CCU to view devices.",
     "no_devices": "No configurable devices found.",
-    "channels": "channels"
+    "channels": "channels",
+    "unreachable": "Unreachable",
+    "reachable": "Reachable",
+    "low_battery": "Low battery",
+    "config_pending": "Configuration pending"
   },
   "device_detail": {
     "address": "Address",
@@ -26,7 +30,17 @@
     "yes": "Yes",
     "no": "No",
     "reachable": "Reachable",
-    "unreachable": "Unreachable"
+    "unreachable": "Unreachable",
+    "export": "Export",
+    "import": "Import",
+    "export_success": "Configuration exported successfully.",
+    "export_failed": "Failed to export configuration.",
+    "import_confirm_title": "Import Configuration",
+    "import_confirm_text": "Import and apply configuration to channel {channel}?",
+    "import_success": "Configuration imported successfully.",
+    "import_failed": "Failed to import configuration.",
+    "import_validation_failed": "Import validation failed.",
+    "show_history": "Change History"
   },
   "channel_config": {
     "save": "Save",
@@ -39,6 +53,20 @@
     "unsaved_warning": "You have unsaved changes. Discard them and go back?",
     "save_success": "Changes saved successfully.",
     "save_failed": "Failed to save changes.",
-    "validation_failed": "Validation failed. Please check the highlighted fields."
+    "validation_failed": "Validation failed. Please check the highlighted fields.",
+    "undo": "Undo",
+    "redo": "Redo"
+  },
+  "change_history": {
+    "title": "Change History",
+    "empty": "No configuration changes recorded.",
+    "clear": "Clear History",
+    "clear_confirm_title": "Clear History",
+    "clear_confirm_text": "Delete all history entries? This cannot be undone.",
+    "clear_success": "History cleared ({count} entries removed).",
+    "source_manual": "Manual",
+    "source_import": "Import",
+    "source_copy": "Copy",
+    "parameters_changed": "{count} parameter(s) changed"
   }
 }

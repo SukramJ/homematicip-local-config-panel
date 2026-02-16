@@ -1,21 +1,10 @@
 import { LitElement, html, css, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { sharedStyles } from "../styles";
-import { listDevices, getParamset } from "../api";
+import { listDevices, exportParamset, importParamset } from "../api";
 import { localize } from "../localize";
-import type { HomeAssistant, DeviceInfo, ChannelInfo } from "../types";
-
-/** Maintenance VALUES parameters to display in the status summary. */
-const MAINTENANCE_STATUS_PARAMS = [
-  "RSSI_DEVICE",
-  "RSSI_PEER",
-  "DUTY_CYCLE",
-  "LOW_BAT",
-  "UNREACH",
-  "SABOTAGE",
-  "CONFIG_PENDING",
-  "UPDATE_PENDING",
-] as const;
+import { showConfirmationDialog, showToast } from "../ha-helpers";
+import type { HomeAssistant, DeviceInfo, ChannelInfo, MaintenanceData } from "../types";
 
 @customElement("hm-device-detail")
 export class HmDeviceDetail extends LitElement {
@@ -25,7 +14,6 @@ export class HmDeviceDetail extends LitElement {
   @property() public deviceAddress = "";
 
   @state() private _device: DeviceInfo | null = null;
-  @state() private _maintenanceValues: Record<string, unknown> = {};
   @state() private _loading = true;
   @state() private _error = "";
 
@@ -46,21 +34,6 @@ export class HmDeviceDetail extends LitElement {
       const devices = await listDevices(this.hass, this.entryId);
       this._device =
         devices.find((d) => d.address === this.deviceAddress) ?? null;
-
-      if (this._device) {
-        const ch0 = this._device.channels.find((c) =>
-          c.address.endsWith(":0")
-        );
-        if (ch0 && ch0.paramset_keys.includes("VALUES")) {
-          this._maintenanceValues = await getParamset(
-            this.hass,
-            this.entryId,
-            this.interfaceId,
-            ch0.address,
-            "VALUES"
-          );
-        }
-      }
     } catch (err) {
       this._error = String(err);
     } finally {
@@ -91,6 +64,75 @@ export class HmDeviceDetail extends LitElement {
     );
   }
 
+  private _handleShowHistory(): void {
+    this.dispatchEvent(
+      new CustomEvent("show-history", {
+        detail: { device: this.deviceAddress },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  private async _handleExport(channel: ChannelInfo): Promise<void> {
+    try {
+      const result = await exportParamset(
+        this.hass,
+        this.entryId,
+        this.interfaceId,
+        channel.address,
+        "MASTER"
+      );
+      const blob = new Blob([result.json_data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${channel.address.replace(/:/g, "_")}_MASTER.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast(this, { message: this._l("device_detail.export_success") });
+    } catch {
+      showToast(this, { message: this._l("device_detail.export_failed") });
+    }
+  }
+
+  private async _handleImport(channel: ChannelInfo): Promise<void> {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.onchange = async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        const jsonData = await file.text();
+        const confirmed = await showConfirmationDialog(this, {
+          title: this._l("device_detail.import_confirm_title"),
+          text: this._l("device_detail.import_confirm_text", { channel: channel.address }),
+          confirmText: this._l("device_detail.import"),
+          dismissText: this._l("common.cancel"),
+        });
+        if (!confirmed) return;
+
+        const result = await importParamset(
+          this.hass,
+          this.entryId,
+          this.interfaceId,
+          channel.address,
+          jsonData,
+          "MASTER"
+        );
+        if (result.success) {
+          showToast(this, { message: this._l("device_detail.import_success") });
+        } else {
+          showToast(this, { message: this._l("device_detail.import_validation_failed") });
+        }
+      } catch {
+        showToast(this, { message: this._l("device_detail.import_failed") });
+      }
+    };
+    input.click();
+  }
+
   render() {
     if (this._loading) {
       return html`<div class="loading">${this._l("common.loading")}</div>`;
@@ -117,15 +159,18 @@ export class HmDeviceDetail extends LitElement {
           ${this._l("device_detail.address")}: ${device.address} |
           ${this._l("device_detail.firmware")}: ${device.firmware}
         </div>
+        <button class="history-button" @click=${this._handleShowHistory}>
+          ${this._l("device_detail.show_history")}
+        </button>
       </div>
 
-      ${ch0 ? this._renderMaintenanceChannel(ch0) : nothing}
+      ${ch0 ? this._renderMaintenanceChannel(ch0, device.maintenance) : nothing}
       ${otherChannels.map((ch) => this._renderChannel(ch))}
     `;
   }
 
-  private _renderMaintenanceChannel(channel: ChannelInfo) {
-    const hasStatus = Object.keys(this._maintenanceValues).length > 0;
+  private _renderMaintenanceChannel(channel: ChannelInfo, maintenance: MaintenanceData) {
+    const hasStatus = maintenance && Object.keys(maintenance).length > 0;
     const hasMaster = channel.paramset_keys.includes("MASTER");
 
     return html`
@@ -133,7 +178,7 @@ export class HmDeviceDetail extends LitElement {
         <div class="channel-header">
           ${this._l("device_detail.channel")} 0: ${channel.channel_type}
         </div>
-        ${hasStatus ? this._renderStatusSummary() : nothing}
+        ${hasStatus ? this._renderStatusSummary(maintenance) : nothing}
         ${hasMaster
           ? html`
               <div class="channel-actions">
@@ -143,6 +188,18 @@ export class HmDeviceDetail extends LitElement {
                 >
                   ${this._l("device_detail.configure_master")} \u25B8
                 </button>
+                <button
+                  class="configure-button"
+                  @click=${() => this._handleExport(channel)}
+                >
+                  ${this._l("device_detail.export")} &#x2B07;
+                </button>
+                <button
+                  class="configure-button"
+                  @click=${() => this._handleImport(channel)}
+                >
+                  ${this._l("device_detail.import")} &#x2B06;
+                </button>
               </div>
             `
           : nothing}
@@ -150,43 +207,38 @@ export class HmDeviceDetail extends LitElement {
     `;
   }
 
-  private _renderStatusSummary() {
-    const vals = this._maintenanceValues;
+  private _renderStatusSummary(m: MaintenanceData) {
     const items: { label: string; value: string; icon: string }[] = [];
 
-    for (const param of MAINTENANCE_STATUS_PARAMS) {
-      if (!(param in vals)) continue;
-      const raw = vals[param];
-      let display: string;
-      let icon: string;
-
-      switch (param) {
-        case "RSSI_DEVICE":
-          display = `${raw} dBm`;
-          icon = "\uD83D\uDCF6";
-          break;
-        case "RSSI_PEER":
-          display = `${raw} dBm`;
-          icon = "\uD83D\uDCF6";
-          break;
-        case "DUTY_CYCLE":
-          display = typeof raw === "number" ? `${raw.toFixed(1)}%` : String(raw);
-          icon = "\u23F1";
-          break;
-        case "LOW_BAT":
-          display = raw ? this._l("device_detail.yes") : this._l("device_detail.no");
-          icon = raw ? "\uD83D\uDD0B" : "\uD83D\uDD0B";
-          break;
-        case "UNREACH":
-          display = raw ? this._l("device_detail.unreachable") : this._l("device_detail.reachable");
-          icon = raw ? "\u274C" : "\u2705";
-          break;
-        default:
-          display = String(raw);
-          icon = "\u2139\uFE0F";
-      }
-
-      items.push({ label: param.replace(/_/g, " "), value: display, icon });
+    if (m.rssi_device !== undefined) {
+      items.push({ label: "RSSI DEVICE", value: `${m.rssi_device} dBm`, icon: "\uD83D\uDCF6" });
+    }
+    if (m.rssi_peer !== undefined) {
+      items.push({ label: "RSSI PEER", value: `${m.rssi_peer} dBm`, icon: "\uD83D\uDCF6" });
+    }
+    if (m.dutycycle !== undefined) {
+      items.push({ label: "DUTYCYCLE", value: String(m.dutycycle), icon: "\u23F1" });
+    }
+    if (m.low_bat !== undefined) {
+      items.push({
+        label: "LOW BAT",
+        value: m.low_bat ? this._l("device_detail.yes") : this._l("device_detail.no"),
+        icon: "\uD83D\uDD0B",
+      });
+    }
+    if (m.unreach !== undefined) {
+      items.push({
+        label: "UNREACH",
+        value: m.unreach ? this._l("device_detail.unreachable") : this._l("device_detail.reachable"),
+        icon: m.unreach ? "\u274C" : "\u2705",
+      });
+    }
+    if (m.config_pending !== undefined) {
+      items.push({
+        label: "CONFIG PENDING",
+        value: m.config_pending ? this._l("device_detail.yes") : this._l("device_detail.no"),
+        icon: "\u2139\uFE0F",
+      });
     }
 
     if (items.length === 0) return nothing;
@@ -223,6 +275,18 @@ export class HmDeviceDetail extends LitElement {
                 >
                   ${this._l("device_detail.configure_master")} \u25B8
                 </button>
+                <button
+                  class="configure-button"
+                  @click=${() => this._handleExport(channel)}
+                >
+                  ${this._l("device_detail.export")} &#x2B07;
+                </button>
+                <button
+                  class="configure-button"
+                  @click=${() => this._handleImport(channel)}
+                >
+                  ${this._l("device_detail.import")} &#x2B06;
+                </button>
               </div>
             `
           : html`
@@ -247,6 +311,23 @@ export class HmDeviceDetail extends LitElement {
         font-weight: 400;
       }
 
+      .history-button {
+        background: none;
+        border: 1px solid var(--primary-color, #03a9f4);
+        color: var(--primary-color, #03a9f4);
+        padding: 4px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        font-family: inherit;
+        margin-top: 8px;
+      }
+
+      .history-button:hover {
+        background: var(--primary-color, #03a9f4);
+        color: #fff;
+      }
+
       .channel-card {
         border: 1px solid var(--divider-color, #e0e0e0);
         border-radius: 8px;
@@ -268,6 +349,9 @@ export class HmDeviceDetail extends LitElement {
 
       .channel-actions {
         padding: 8px 16px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
       }
 
       .channel-no-config {
