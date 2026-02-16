@@ -1,9 +1,10 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import type { HomeAssistant, FormParameter } from "../types";
 
-@customElement("hm-form-parameter")
+@safeCustomElement("hm-form-parameter")
 export class HmFormParameter extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ attribute: false }) public parameter!: FormParameter;

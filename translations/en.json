@@ -40,7 +40,8 @@
     "import_success": "Configuration imported successfully.",
     "import_failed": "Failed to import configuration.",
     "import_validation_failed": "Import validation failed.",
-    "show_history": "Change History"
+    "show_history": "Change History",
+    "show_links": "Direct Links"
   },
   "channel_config": {
     "save": "Save",
@@ -68,5 +69,50 @@
     "source_import": "Import",
     "source_copy": "Copy",
     "parameters_changed": "{count} parameter(s) changed"
+  },
+  "device_links": {
+    "title": "Direct Links",
+    "subtitle": "Direct links for {device}",
+    "empty": "No direct links configured.",
+    "add_link": "New Link",
+    "outgoing": "Outgoing",
+    "incoming": "Incoming",
+    "configure": "Configure",
+    "delete": "Delete",
+    "delete_confirm_title": "Delete Link",
+    "delete_confirm_text": "Remove the direct link from {sender} to {receiver}? The devices will no longer communicate directly.",
+    "delete_success": "Link deleted successfully.",
+    "delete_failed": "Failed to delete link.",
+    "channel_group": "Channel {channel}"
+  },
+  "link_config": {
+    "title": "Link Configuration",
+    "sender": "Sender",
+    "receiver": "Receiver",
+    "save_success": "Link configuration saved.",
+    "save_failed": "Failed to save link configuration.",
+    "discard": "Discard Changes",
+    "confirm_save_title": "Save Link Changes",
+    "confirm_save_text": "Apply {count} change(s) to this link?",
+    "unsaved_title": "Unsaved Changes",
+    "unsaved_warning": "You have unsaved changes. Discard them and go back?"
+  },
+  "add_link": {
+    "title": "New Direct Link",
+    "step_channel": "Step 1/3 — Select Channel",
+    "step_peer": "Step 2/3 — Select Partner",
+    "step_confirm": "Step 3/3 — Confirm",
+    "select_channel": "Select a channel from this device:",
+    "select_role": "Role of selected channel:",
+    "role_sender": "Sender (sends commands)",
+    "role_receiver": "Receiver (receives commands)",
+    "search_devices": "Search devices...",
+    "no_compatible": "No compatible channels found.",
+    "link_name": "Link name (optional)",
+    "create": "Create Link",
+    "create_success": "Link created successfully.",
+    "create_failed": "Failed to create link.",
+    "next": "Next",
+    "back": "Back"
   }
 }

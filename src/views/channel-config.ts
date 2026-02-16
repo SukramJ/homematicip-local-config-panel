@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import {
   getFormSchema,
@@ -16,7 +17,7 @@ import { showConfirmationDialog, showToast } from "../ha-helpers";
 import "../components/config-form";
 import type { HomeAssistant, FormSchema } from "../types";
 
-@customElement("hm-channel-config")
+@safeCustomElement("hm-channel-config")
 export class HmChannelConfig extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() public entryId = "";
@@ -24,6 +25,7 @@ export class HmChannelConfig extends LitElement {
   @property() public channelAddress = "";
   @property() public channelType = "";
   @property() public paramsetKey = "MASTER";
+  @property() public deviceName = "";
 
   @state() private _schema: FormSchema | null = null;
   @state() private _pendingChanges: Map<string, unknown> = new Map();
@@ -326,9 +328,11 @@ export class HmChannelConfig extends LitElement {
       </button>
 
       <div class="config-header">
-        <h2>${this.channelAddress}</h2>
+        ${this.deviceName
+          ? html`<h2>${this.deviceName}</h2>`
+          : nothing}
         <div class="device-info">
-          ${this._schema?.channel_type ?? ""} \u2014 ${this.paramsetKey}
+          ${this.channelAddress} \u2014 ${this._schema?.channel_type ?? ""} \u2014 ${this.paramsetKey}
         </div>
       </div>
 

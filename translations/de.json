@@ -40,7 +40,8 @@
     "import_success": "Konfiguration erfolgreich importiert.",
     "import_failed": "Import der Konfiguration fehlgeschlagen.",
     "import_validation_failed": "Import-Validierung fehlgeschlagen.",
-    "show_history": "Änderungsverlauf"
+    "show_history": "Änderungsverlauf",
+    "show_links": "Direktverknüpfungen"
   },
   "channel_config": {
     "save": "Speichern",
@@ -68,5 +69,50 @@
     "source_import": "Import",
     "source_copy": "Kopie",
     "parameters_changed": "{count} Parameter geändert"
+  },
+  "device_links": {
+    "title": "Direktverknüpfungen",
+    "subtitle": "Direktverknüpfungen für {device}",
+    "empty": "Keine Direktverknüpfungen konfiguriert.",
+    "add_link": "Neue Verknüpfung",
+    "outgoing": "Ausgehend",
+    "incoming": "Eingehend",
+    "configure": "Konfigurieren",
+    "delete": "Löschen",
+    "delete_confirm_title": "Verknüpfung löschen",
+    "delete_confirm_text": "Direktverknüpfung von {sender} nach {receiver} entfernen? Die Geräte kommunizieren dann nicht mehr direkt.",
+    "delete_success": "Verknüpfung erfolgreich gelöscht.",
+    "delete_failed": "Fehler beim Löschen der Verknüpfung.",
+    "channel_group": "Kanal {channel}"
+  },
+  "link_config": {
+    "title": "Link-Konfiguration",
+    "sender": "Sender",
+    "receiver": "Empfänger",
+    "save_success": "Link-Konfiguration gespeichert.",
+    "save_failed": "Fehler beim Speichern der Link-Konfiguration.",
+    "discard": "Änderungen verwerfen",
+    "confirm_save_title": "Link-Änderungen speichern",
+    "confirm_save_text": "{count} Änderung(en) auf diese Verknüpfung anwenden?",
+    "unsaved_title": "Ungespeicherte Änderungen",
+    "unsaved_warning": "Es gibt ungespeicherte Änderungen. Verwerfen und zurückgehen?"
+  },
+  "add_link": {
+    "title": "Neue Direktverknüpfung",
+    "step_channel": "Schritt 1/3 — Kanal wählen",
+    "step_peer": "Schritt 2/3 — Partner wählen",
+    "step_confirm": "Schritt 3/3 — Bestätigen",
+    "select_channel": "Kanal dieses Geräts auswählen:",
+    "select_role": "Rolle des gewählten Kanals:",
+    "role_sender": "Sender (sendet Kommandos)",
+    "role_receiver": "Empfänger (empfängt Kommandos)",
+    "search_devices": "Geräte suchen...",
+    "no_compatible": "Keine kompatiblen Kanäle gefunden.",
+    "link_name": "Verknüpfungsname (optional)",
+    "create": "Verknüpfung erstellen",
+    "create_success": "Verknüpfung erfolgreich erstellt.",
+    "create_failed": "Fehler beim Erstellen der Verknüpfung.",
+    "next": "Weiter",
+    "back": "Zurück"
   }
 }

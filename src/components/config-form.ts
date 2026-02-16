@@ -1,10 +1,11 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import "./form-parameter";
 import type { HomeAssistant, FormSchema, FormParameter } from "../types";
 
-@customElement("hm-config-form")
+@safeCustomElement("hm-config-form")
 export class HmConfigForm extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ attribute: false }) public schema!: FormSchema;

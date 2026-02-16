@@ -1,11 +1,12 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import { listDevices } from "../api";
 import { localize } from "../localize";
 import type { HomeAssistant, EntryInfo, DeviceInfo, MaintenanceData } from "../types";
 
-@customElement("hm-device-list")
+@safeCustomElement("hm-device-list")
 export class HmDeviceList extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() public entryId = "";
@@ -52,8 +53,11 @@ export class HmDeviceList extends LitElement {
   }
 
   private get _groupedDevices(): Map<string, DeviceInfo[]> {
+    const sorted = [...this._filteredDevices].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
     const groups = new Map<string, DeviceInfo[]>();
-    for (const device of this._filteredDevices) {
+    for (const device of sorted) {
       const iface = device.interface_id.split("-").slice(1).join("-") || device.interface_id;
       if (!groups.has(iface)) groups.set(iface, []);
       groups.get(iface)!.push(device);
@@ -173,8 +177,8 @@ export class HmDeviceList extends LitElement {
                   @click=${() => this._handleDeviceClick(device)}
                 >
                   <div class="device-main">
-                    <div class="device-model">${device.model}</div>
                     <div class="device-name">${device.name}</div>
+                    <div class="device-model">${device.model}</div>
                   </div>
                   <div class="device-meta">
                     <span class="device-address">${device.address}</span>
@@ -269,12 +273,12 @@ export class HmDeviceList extends LitElement {
         flex: 1;
       }
 
-      .device-model {
+      .device-name {
         font-size: 14px;
         font-weight: 500;
       }
 
-      .device-name {
+      .device-model {
         font-size: 13px;
         color: var(--secondary-text-color);
         margin-top: 2px;
