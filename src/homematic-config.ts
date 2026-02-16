@@ -1,5 +1,6 @@
 import { LitElement, html, css } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { safeCustomElement } from "./safe-element";
 import "./views/device-list";
 import "./views/device-detail";
 import "./views/channel-config";
@@ -18,7 +19,7 @@ type PanelView =
   | "link-config"
   | "add-link";
 
-@customElement("homematic-config")
+@safeCustomElement("homematic-config")
 export class HomematicConfigPanel extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property({ attribute: false }) public panel!: PanelInfo;
@@ -190,6 +191,7 @@ export class HomematicConfigPanel extends LitElement {
             .channelAddress=${this._selectedChannel}
             .channelType=${this._selectedChannelType}
             .paramsetKey=${this._selectedParamsetKey}
+            .deviceName=${this._selectedDeviceName}
             @back=${() =>
               this._navigateTo("device-detail", {
                 device: this._selectedDevice,

@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import { listDevices, getLinkableChannels, addLink } from "../api";
 import { localize } from "../localize";
@@ -13,7 +14,7 @@ import type {
 
 type WizardStep = "select-channel" | "select-peer" | "confirm";
 
-@customElement("hm-add-link")
+@safeCustomElement("hm-add-link")
 export class HmAddLink extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() public entryId = "";

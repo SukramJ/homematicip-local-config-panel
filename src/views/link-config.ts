@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import { getLinkFormSchema, putLinkParamset } from "../api";
 import { localize } from "../localize";
@@ -7,7 +8,7 @@ import { showConfirmationDialog, showToast } from "../ha-helpers";
 import "../components/config-form";
 import type { HomeAssistant, FormSchema } from "../types";
 
-@customElement("hm-link-config")
+@safeCustomElement("hm-link-config")
 export class HmLinkConfig extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() public entryId = "";

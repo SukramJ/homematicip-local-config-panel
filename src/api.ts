@@ -11,6 +11,7 @@ export interface MaintenanceData {
 
 export interface DeviceInfo {
   address: string;
+  interface: string;
   interface_id: string;
   model: string;
   model_description: string;

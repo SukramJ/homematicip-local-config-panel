@@ -1,12 +1,13 @@
 import { LitElement, html, css, nothing } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
+import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
 import { listDevices, exportParamset, importParamset, LINKABLE_INTERFACES } from "../api";
 import { localize } from "../localize";
 import { showConfirmationDialog, showToast } from "../ha-helpers";
 import type { HomeAssistant, DeviceInfo, ChannelInfo, MaintenanceData } from "../types";
 
-@customElement("hm-device-detail")
+@safeCustomElement("hm-device-detail")
 export class HmDeviceDetail extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @property() public entryId = "";
@@ -57,6 +58,7 @@ export class HmDeviceDetail extends LitElement {
           interfaceId: this.interfaceId,
           channelType: channel.channel_type,
           paramsetKey: "MASTER",
+          deviceName: this._device?.name || this.deviceAddress,
         },
         bubbles: true,
         composed: true,
@@ -174,7 +176,7 @@ export class HmDeviceDetail extends LitElement {
           ${this._l("device_detail.firmware")}: ${device.firmware}
         </div>
         <div class="header-actions">
-          ${LINKABLE_INTERFACES.has(device.interface_id)
+          ${LINKABLE_INTERFACES.has(device.interface)
             ? html`
                 <button class="history-button" @click=${this._handleShowLinks}>
                   ${this._l("device_detail.show_links")}
