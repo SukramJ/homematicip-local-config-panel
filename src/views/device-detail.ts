@@ -201,7 +201,7 @@ export class HmDeviceDetail extends LitElement {
     return html`
       <div class="channel-card maintenance">
         <div class="channel-header">
-          ${this._l("device_detail.channel")} 0: ${channel.channel_type}
+          ${this._l("device_detail.channel")} 0: ${channel.channel_type_label}
         </div>
         ${hasStatus ? this._renderStatusSummary(maintenance) : nothing}
         ${hasMaster
@@ -289,7 +289,7 @@ export class HmDeviceDetail extends LitElement {
     return html`
       <div class="channel-card">
         <div class="channel-header">
-          ${this._l("device_detail.channel")} ${channelNo}: ${channel.channel_type}
+          ${this._l("device_detail.channel")} ${channelNo}: ${channel.channel_type_label}
         </div>
         ${hasMaster
           ? html`

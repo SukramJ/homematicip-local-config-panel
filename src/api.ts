@@ -24,6 +24,7 @@ export interface DeviceInfo {
 export interface ChannelInfo {
   address: string;
   channel_type: string;
+  channel_type_label: string;
   paramset_keys: string[];
 }
 
