@@ -95,7 +95,15 @@
     "confirm_save_title": "Link-Änderungen speichern",
     "confirm_save_text": "{count} Änderung(en) auf diese Verknüpfung anwenden?",
     "unsaved_title": "Ungespeicherte Änderungen",
-    "unsaved_warning": "Es gibt ungespeicherte Änderungen. Verwerfen und zurückgehen?"
+    "unsaved_warning": "Es gibt ungespeicherte Änderungen. Verwerfen und zurückgehen?",
+    "receiver_params": "Empfänger-Parameter",
+    "sender_params": "Sender-Parameter",
+    "no_params": "Keine konfigurierbaren Parameter für diese Verknüpfung.",
+    "profile": "Profil",
+    "short_keypress": "Kurzer Tastendruck",
+    "long_keypress": "Langer Tastendruck",
+    "last_value": "Letzter Wert",
+    "custom_time": "Benutzerdefiniert"
   },
   "add_link": {
     "title": "Neue Direktverknüpfung",

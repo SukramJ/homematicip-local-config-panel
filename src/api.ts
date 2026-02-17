@@ -55,6 +55,16 @@ export interface FormParameter {
   writable: boolean;
   modified: boolean;
   options?: string[];
+
+  // Link parameter metadata (optional, only present for LINK paramsets):
+  keypress_group?: "short" | "long" | "common";
+  category?: "time" | "level" | "jump_target" | "condition" | "action" | "other";
+  display_as_percent?: boolean;
+  has_last_value?: boolean;
+  hidden_by_default?: boolean;
+  time_pair_id?: string;
+  time_selector_type?: "timeOnOff" | "delay" | "rampOnOff";
+  time_presets?: Array<{ base: number; factor: number; label: string }>;
 }
 
 export interface PutResult {
@@ -121,8 +131,12 @@ export interface LinkInfo {
   flags: number;
   sender_device_name: string;
   sender_device_model: string;
+  sender_channel_type: string;
+  sender_channel_type_label: string;
   receiver_device_name: string;
   receiver_device_model: string;
+  receiver_channel_type: string;
+  receiver_channel_type_label: string;
   peer_address: string;
   peer_device_name: string;
   peer_device_model: string;
@@ -135,6 +149,20 @@ export interface LinkableChannel {
   device_address: string;
   device_name: string;
   device_model: string;
+}
+
+export interface ResolvedProfile {
+  id: number;
+  name: string;
+  description: string;
+  editable_params: string[];
+  fixed_params: Record<string, number>;
+  default_values: Record<string, number>;
+}
+
+export interface LinkProfilesResponse {
+  profiles: ResolvedProfile[] | null;
+  active_profile_id: number;
 }
 
 /** Interfaces that support direct links (peerings). */
@@ -483,4 +511,24 @@ export async function getLinkableChannels(
     role,
   });
   return result.channels;
+}
+
+export async function getLinkProfiles(
+  hass: HomeAssistant,
+  entryId: string,
+  interfaceId: string,
+  senderAddress: string,
+  receiverAddress: string
+): Promise<LinkProfilesResponse | null> {
+  try {
+    return await hass.callWS<LinkProfilesResponse>({
+      type: "homematicip_local/config/get_link_profiles",
+      entry_id: entryId,
+      interface_id: interfaceId,
+      sender_channel_address: senderAddress,
+      receiver_channel_address: receiverAddress,
+    });
+  } catch {
+    return null;
+  }
 }

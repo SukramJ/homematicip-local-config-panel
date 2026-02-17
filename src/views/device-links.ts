@@ -79,6 +79,12 @@ export class HmDeviceLinks extends LitElement {
           senderAddress: link.sender_address,
           receiverAddress: link.receiver_address,
           interfaceId: this.interfaceId,
+          senderDeviceName: link.sender_device_name,
+          senderDeviceModel: link.sender_device_model,
+          senderChannelTypeLabel: link.sender_channel_type_label,
+          receiverDeviceName: link.receiver_device_name,
+          receiverDeviceModel: link.receiver_device_model,
+          receiverChannelTypeLabel: link.receiver_channel_type_label,
         },
         bubbles: true,
         composed: true,
@@ -198,15 +204,26 @@ export class HmDeviceLinks extends LitElement {
           </span>
         </div>
         <div class="link-info">
-          <div class="link-addresses">
-            <span class="link-sender">${link.sender_address}</span>
+          <div class="link-endpoints">
+            <div class="link-endpoint-info">
+              <span class="link-device-name">${link.sender_device_name}</span>
+              <span class="link-device-detail">
+                ${link.sender_device_model}${link.sender_channel_type_label
+                  ? html` · ${link.sender_channel_type_label}`
+                  : nothing}
+              </span>
+              <span class="link-endpoint-address">${link.sender_address}</span>
+            </div>
             <span class="link-arrow">\u2192</span>
-            <span class="link-receiver">${link.receiver_address}</span>
-          </div>
-          <div class="link-devices">
-            ${link.sender_device_name} (${link.sender_device_model})
-            \u2192
-            ${link.receiver_device_name} (${link.receiver_device_model})
+            <div class="link-endpoint-info">
+              <span class="link-device-name">${link.receiver_device_name}</span>
+              <span class="link-device-detail">
+                ${link.receiver_device_model}${link.receiver_channel_type_label
+                  ? html` · ${link.receiver_channel_type_label}`
+                  : nothing}
+              </span>
+              <span class="link-endpoint-address">${link.receiver_address}</span>
+            </div>
           </div>
           ${link.name
             ? html`<div class="link-name">"${link.name}"</div>`
@@ -311,22 +328,43 @@ export class HmDeviceLinks extends LitElement {
         color: #fff;
       }
 
-      .link-addresses {
-        font-family: monospace;
-        font-size: 13px;
+      .link-endpoints {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
         margin: 8px 0 4px;
+      }
+
+      .link-endpoint-info {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        min-width: 0;
+      }
+
+      .link-device-name {
+        font-size: 14px;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .link-device-detail {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+      }
+
+      .link-endpoint-address {
+        font-family: monospace;
+        font-size: 12px;
+        color: var(--secondary-text-color);
       }
 
       .link-arrow {
         color: var(--secondary-text-color);
-      }
-
-      .link-devices {
-        font-size: 13px;
-        color: var(--secondary-text-color);
+        font-size: 16px;
+        flex-shrink: 0;
       }
 
       .link-name {
@@ -371,14 +409,14 @@ export class HmDeviceLinks extends LitElement {
       }
 
       @media (max-width: 600px) {
-        .link-addresses {
+        .link-endpoints {
           flex-direction: column;
           align-items: flex-start;
-          gap: 2px;
+          gap: 4px;
         }
 
         .link-arrow {
-          display: none;
+          align-self: center;
         }
 
         .link-actions {

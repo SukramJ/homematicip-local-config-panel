@@ -36,6 +36,12 @@ export class HomematicConfigPanel extends LitElement {
   @state() private _selectedDeviceName = "";
   @state() private _selectedSenderAddress = "";
   @state() private _selectedReceiverAddress = "";
+  @state() private _senderDeviceName = "";
+  @state() private _senderDeviceModel = "";
+  @state() private _senderChannelTypeLabel = "";
+  @state() private _receiverDeviceName = "";
+  @state() private _receiverDeviceModel = "";
+  @state() private _receiverChannelTypeLabel = "";
 
   connectedCallback(): void {
     super.connectedCallback();
@@ -136,6 +142,12 @@ export class HomematicConfigPanel extends LitElement {
       deviceName?: string;
       senderAddress?: string;
       receiverAddress?: string;
+      senderDeviceName?: string;
+      senderDeviceModel?: string;
+      senderChannelTypeLabel?: string;
+      receiverDeviceName?: string;
+      receiverDeviceModel?: string;
+      receiverChannelTypeLabel?: string;
     }
   ): void {
     this._view = view;
@@ -147,6 +159,12 @@ export class HomematicConfigPanel extends LitElement {
     if (detail?.deviceName !== undefined) this._selectedDeviceName = detail.deviceName;
     if (detail?.senderAddress !== undefined) this._selectedSenderAddress = detail.senderAddress;
     if (detail?.receiverAddress !== undefined) this._selectedReceiverAddress = detail.receiverAddress;
+    if (detail?.senderDeviceName !== undefined) this._senderDeviceName = detail.senderDeviceName;
+    if (detail?.senderDeviceModel !== undefined) this._senderDeviceModel = detail.senderDeviceModel;
+    if (detail?.senderChannelTypeLabel !== undefined) this._senderChannelTypeLabel = detail.senderChannelTypeLabel;
+    if (detail?.receiverDeviceName !== undefined) this._receiverDeviceName = detail.receiverDeviceName;
+    if (detail?.receiverDeviceModel !== undefined) this._receiverDeviceModel = detail.receiverDeviceModel;
+    if (detail?.receiverChannelTypeLabel !== undefined) this._receiverChannelTypeLabel = detail.receiverChannelTypeLabel;
     this._updateUrlHash();
   }
 
@@ -241,6 +259,12 @@ export class HomematicConfigPanel extends LitElement {
             .interfaceId=${this._selectedInterfaceId}
             .senderAddress=${this._selectedSenderAddress}
             .receiverAddress=${this._selectedReceiverAddress}
+            .senderDeviceName=${this._senderDeviceName}
+            .senderDeviceModel=${this._senderDeviceModel}
+            .senderChannelTypeLabel=${this._senderChannelTypeLabel}
+            .receiverDeviceName=${this._receiverDeviceName}
+            .receiverDeviceModel=${this._receiverDeviceModel}
+            .receiverChannelTypeLabel=${this._receiverChannelTypeLabel}
             @back=${() =>
               this._navigateTo("device-links", {
                 device: this._selectedDevice,

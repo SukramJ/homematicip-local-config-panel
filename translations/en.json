@@ -95,7 +95,15 @@
     "confirm_save_title": "Save Link Changes",
     "confirm_save_text": "Apply {count} change(s) to this link?",
     "unsaved_title": "Unsaved Changes",
-    "unsaved_warning": "You have unsaved changes. Discard them and go back?"
+    "unsaved_warning": "You have unsaved changes. Discard them and go back?",
+    "receiver_params": "Receiver Parameters",
+    "sender_params": "Sender Parameters",
+    "no_params": "No configurable parameters for this link.",
+    "profile": "Profile",
+    "short_keypress": "Short keypress",
+    "long_keypress": "Long keypress",
+    "last_value": "Last value",
+    "custom_time": "Custom"
   },
   "add_link": {
     "title": "New Direct Link",
