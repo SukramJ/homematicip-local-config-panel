@@ -2,6 +2,7 @@ import { LitElement, html, css, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { safeCustomElement } from "../safe-element";
 import { sharedStyles } from "../styles";
+import { localize } from "../localize";
 import type { HomeAssistant, FormParameter } from "../types";
 
 @safeCustomElement("hm-form-parameter")
@@ -60,7 +61,7 @@ export class HmFormParameter extends LitElement {
                 this._emitChange((e.target as HTMLInputElement).checked);
               }}
             />
-            <span class="toggle-label">${this.value ? "On" : "Off"}</span>
+            <span class="toggle-label">${this.value ? localize(this.hass, "form_parameter.toggle_on") : localize(this.hass, "form_parameter.toggle_off")}</span>
           </label>
         `;
 

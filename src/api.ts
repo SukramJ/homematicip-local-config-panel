@@ -31,6 +31,7 @@ export interface ChannelInfo {
 export interface FormSchema {
   channel_address: string;
   channel_type: string;
+  channel_type_label: string;
   sections: FormSection[];
   total_parameters: number;
   writable_parameters: number;
@@ -147,6 +148,7 @@ export interface LinkInfo {
 export interface LinkableChannel {
   address: string;
   channel_type: string;
+  channel_type_label: string;
   device_address: string;
   device_name: string;
   device_model: string;

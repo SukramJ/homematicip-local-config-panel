@@ -41,7 +41,21 @@
     "import_failed": "Import der Konfiguration fehlgeschlagen.",
     "import_validation_failed": "Import-Validierung fehlgeschlagen.",
     "show_history": "Änderungsverlauf",
-    "show_links": "Direktverknüpfungen"
+    "show_links": "Direktverknüpfungen",
+    "rssi_device": "RSSI Gerät",
+    "rssi_peer": "RSSI Peer",
+    "dutycycle": "Duty Cycle",
+    "low_bat": "Batterie schwach",
+    "unreach": "Erreichbarkeit",
+    "config_pending_label": "Konfig. ausstehend"
+  },
+  "form_parameter": {
+    "toggle_on": "Ein",
+    "toggle_off": "Aus"
+  },
+  "time_selector": {
+    "base": "Basis",
+    "factor": "Faktor"
   },
   "channel_config": {
     "save": "Speichern",

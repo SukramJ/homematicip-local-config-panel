@@ -99,7 +99,7 @@ export class HmTimeSelector extends LitElement {
           ? html`
               <div class="custom-time-inputs">
                 <label>
-                  Base:
+                  ${this._l("time_selector.base")}:
                   <input
                     type="number"
                     min="0"
@@ -109,7 +109,7 @@ export class HmTimeSelector extends LitElement {
                   />
                 </label>
                 <label>
-                  Factor:
+                  ${this._l("time_selector.factor")}:
                   <input
                     type="number"
                     min="0"

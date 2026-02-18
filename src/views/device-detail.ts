@@ -236,31 +236,31 @@ export class HmDeviceDetail extends LitElement {
     const items: { label: string; value: string; icon: string }[] = [];
 
     if (m.rssi_device !== undefined) {
-      items.push({ label: "RSSI DEVICE", value: `${m.rssi_device} dBm`, icon: "\uD83D\uDCF6" });
+      items.push({ label: this._l("device_detail.rssi_device"), value: `${m.rssi_device} dBm`, icon: "\uD83D\uDCF6" });
     }
     if (m.rssi_peer !== undefined) {
-      items.push({ label: "RSSI PEER", value: `${m.rssi_peer} dBm`, icon: "\uD83D\uDCF6" });
+      items.push({ label: this._l("device_detail.rssi_peer"), value: `${m.rssi_peer} dBm`, icon: "\uD83D\uDCF6" });
     }
     if (m.dutycycle !== undefined) {
-      items.push({ label: "DUTYCYCLE", value: String(m.dutycycle), icon: "\u23F1" });
+      items.push({ label: this._l("device_detail.dutycycle"), value: String(m.dutycycle), icon: "\u23F1" });
     }
     if (m.low_bat !== undefined) {
       items.push({
-        label: "LOW BAT",
+        label: this._l("device_detail.low_bat"),
         value: m.low_bat ? this._l("device_detail.yes") : this._l("device_detail.no"),
         icon: "\uD83D\uDD0B",
       });
     }
     if (m.unreach !== undefined) {
       items.push({
-        label: "UNREACH",
+        label: this._l("device_detail.unreach"),
         value: m.unreach ? this._l("device_detail.unreachable") : this._l("device_detail.reachable"),
         icon: m.unreach ? "\u274C" : "\u2705",
       });
     }
     if (m.config_pending !== undefined) {
       items.push({
-        label: "CONFIG PENDING",
+        label: this._l("device_detail.config_pending_label"),
         value: m.config_pending ? this._l("device_detail.yes") : this._l("device_detail.no"),
         icon: "\u2139\uFE0F",
       });

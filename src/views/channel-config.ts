@@ -332,7 +332,7 @@ export class HmChannelConfig extends LitElement {
           ? html`<h2>${this.deviceName}</h2>`
           : nothing}
         <div class="device-info">
-          ${this.channelAddress} \u2014 ${this._schema?.channel_type ?? ""} \u2014 ${this.paramsetKey}
+          ${this.channelAddress} \u2014 ${this._schema?.channel_type_label || this._schema?.channel_type || ""} \u2014 ${this.paramsetKey}
         </div>
       </div>
 

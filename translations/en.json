@@ -41,7 +41,21 @@
     "import_failed": "Failed to import configuration.",
     "import_validation_failed": "Import validation failed.",
     "show_history": "Change History",
-    "show_links": "Direct Links"
+    "show_links": "Direct Links",
+    "rssi_device": "RSSI Device",
+    "rssi_peer": "RSSI Peer",
+    "dutycycle": "Duty Cycle",
+    "low_bat": "Low Battery",
+    "unreach": "Reachability",
+    "config_pending_label": "Config Pending"
+  },
+  "form_parameter": {
+    "toggle_on": "On",
+    "toggle_off": "Off"
+  },
+  "time_selector": {
+    "base": "Base",
+    "factor": "Factor"
   },
   "channel_config": {
     "save": "Save",

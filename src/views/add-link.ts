@@ -239,7 +239,7 @@ export class HmAddLink extends LitElement {
                     />
                     <div class="radio-content">
                       <div class="radio-title">
-                        ${this._l("device_detail.channel")} ${channelNo}: ${ch.channel_type}
+                        ${this._l("device_detail.channel")} ${channelNo}: ${ch.channel_type_label}
                       </div>
                       <div class="radio-subtitle">${ch.address}</div>
                     </div>
@@ -320,7 +320,7 @@ export class HmAddLink extends LitElement {
                               ${ch.device_name} (${ch.device_model})
                             </div>
                             <div class="radio-subtitle">
-                              ${ch.address} \u2014 ${ch.channel_type}
+                              ${ch.address} \u2014 ${ch.channel_type_label}
                             </div>
                           </div>
                         </div>
